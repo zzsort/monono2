@@ -1,0 +1,15 @@
+ALGeoBuilder/bin/*
+ALGeoBuilder/obj/*
+AionGeoViewer/bin/*
+AionGeoViewer/obj/*
+AionClientViewer/bin/*
+AionClientViewer/obj/*
+AionMonoLib/bin/*
+AionMonoLib/obj/*
+
+Common/bin/*
+Common/obj/*
+
+Packages/*
+.vs/*
+*.user
