@@ -296,10 +296,10 @@ namespace monono2.AionClientViewer
         }
 
         private static string[] s_extText = new[] { ".txt", ".log", ".ini", ".lua", ".toc", ".ext", ".vcxproj",
-            ".filters", ".cmd", ".bat", ".cal" };
+            ".filters", ".cmd", ".bat", ".cal", ".csv", ".nfo" };
         private static string[] s_extHtml = new[] { ".html", ".htm" };
         private static string[] s_extXml = new[] { ".xml" };
-        private static string[] s_extImage = new[] { ".jpg", ".png", ".bmp", ".ico", ".dds",
+        private static string[] s_extImage = new[] { ".jpg", ".png", ".bmp", ".tmb", ".ico", ".dds",
             ".gif", ".tif", ".tga", ".pcx" };
         private static string[] s_extCgf = new[] { ".cgf", ".cga" };
 
@@ -394,8 +394,17 @@ namespace monono2.AionClientViewer
                     case PreviewType.Html:
                         using (var ms = new MemoryStream(pr.GetFile(pakEntry.EntryFilename)))
                         {
-                            var text = EncryptedHtml.DecodeToString(pakEntry.EntryFilename, ms);
-                            ShowTextViewer(text);
+                            try
+                            {
+                                var text = EncryptedHtml.DecodeToString(pakEntry.EntryFilename, ms);
+                                ShowTextViewer(text);
+                            }
+                            catch {
+                                // maybe not encrypted, show raw text
+                                ms.Seek(0, SeekOrigin.Begin);
+                                var text = new StreamReader(ms).ReadToEnd();
+                                ShowTextViewer(text);
+                            }
                         }
                         break;
                     case PreviewType.Xml:

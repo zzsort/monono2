@@ -232,6 +232,14 @@ namespace monono2.Common
             float z = float.Parse(a[2]);
             return new Vector3(x, y, z);
         }
+
+        public static void ParseVector(string xyzStr, out float x, out float y, out float z)
+        {
+            var a = xyzStr.Split(new[] { ',' });
+            x = float.Parse(a[0]);
+            y = float.Parse(a[1]);
+            z = float.Parse(a[2]);
+        }
     }
     
     public static class MathUtil

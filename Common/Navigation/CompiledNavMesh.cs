@@ -635,5 +635,44 @@ namespace monono2.Common.Navigation
 
             return result;
         }
+
+        // returns a direction if indexes are neighbors, else -1
+        // Does not check if the direction is open.
+        public int getDirectionToNeighborByIndex(int startIndex, int endIndex)
+        {
+            if (endIndex < startIndex)
+            {
+                Point p = BlockXYFromIndex(startIndex);
+                if (p.X > 0 && endIndex == startIndex - 1)
+                    return NavMeshUtil.DIRECTION_LEFT;
+                if (p.Y > 0)
+                {
+                    int down = startIndex - m_blockWidth;
+                    if (endIndex == down)
+                        return NavMeshUtil.DIRECTION_BOTTOM;
+                    if (p.X > 0 && endIndex == (down - 1))
+                        return NavMeshUtil.DIRECTION_BL;
+                    if (p.X < (m_blockWidth - 1) && endIndex == (down + 1))
+                        return NavMeshUtil.DIRECTION_BR;
+                }
+            }
+            else if (endIndex > startIndex)
+            {
+                Point p = BlockXYFromIndex(startIndex);
+                if (p.X < (m_blockWidth - 1) && endIndex == (startIndex + 1))
+                    return NavMeshUtil.DIRECTION_RIGHT;
+                if (p.Y < (m_blockHeight - 1))
+                {
+                    int top = startIndex + m_blockWidth;
+                    if (endIndex == top)
+                        return NavMeshUtil.DIRECTION_TOP;
+                    if (p.X > 0 && endIndex == (top - 1))
+                        return NavMeshUtil.DIRECTION_TL;
+                    if (p.X < (m_blockWidth - 1) && endIndex == (top + 1))
+                        return NavMeshUtil.DIRECTION_TR;
+                }
+            }
+            return -1;
+        }
     }
 }

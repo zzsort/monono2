@@ -104,6 +104,11 @@ namespace monono2.AionMonoLib
                 m_astarLoader.SetStartPoint(camera.GetCameraPosition(), m_renderData, ref m_testString);
         }
 
+        public void DrawNavMeshUnderPosition()
+        {
+            m_contentLoader.LoadNavMeshGridUnderPosition(camera.GetCameraPosition());
+        }
+
         public void HandleInput(bool isActive, GameTime gameTime)
         {
             GameInput.HandleInput(this, isActive, gameTime, camera, ref view);

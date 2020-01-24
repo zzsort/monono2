@@ -58,7 +58,7 @@ namespace monono2.AionMonoLib
         {
             using (var levelDir = new DirManager(Path.Combine(aionRoot, "Levels", level)))
             using (var meshesDir = new DirManager(aionRoot, new[] {
-                @"levels\common",
+                @"levels",
                 @"objects\npc\event_object",
                 @"objects\npc\level_object",
                 @"objects\npc\warship", }))
@@ -198,7 +198,30 @@ namespace monono2.AionMonoLib
             }
             GC.Collect();
         }
-        
+        public void LoadNavMeshGridUnderPosition(Vector3 position)
+        {
+            // TODO make sure the right compilednavmesh is loaded (currently it is hardcoded!)
+
+            if (m_tempCompiledNavMeshSet == null) {
+                Debug.WriteLine("m_tempCompiledNavMeshSet is null!");
+                return;
+            }
+
+            var mesh = m_tempCompiledNavMeshSet.FindSubgraphUnderPoint(position.X, position.Y, position.Z);
+            if (mesh == null)
+            {
+                Debug.WriteLine("FindSubgraphUnderPoint returned null!");
+                return;
+            }
+
+            var floorLineVertices = RenderFloorLines(mesh, position, 20);
+
+            if (floorLineVertices.Count > 0)
+            {
+                m_renderData.floorLineVertexBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColor), floorLineVertices.Count, BufferUsage.WriteOnly);
+                m_renderData.floorLineVertexBuffer.SetData<VertexPositionColor>(floorLineVertices.ToArray());
+            }
+        }
         private void LoadBrushes(DirManager meshesDir, DirManager levelDir, List<VertexPositionColor> vertices,
             List<VertexPositionColor> collisionVertices, List<VertexPositionColor> lineVertices)
         {
@@ -440,10 +463,8 @@ namespace monono2.AionMonoLib
             // TODO - configure nav dir - determine filename using worldid xml
 
             DateTime TIMER;
-            var floorLineVertices = new List<VertexPositionColor>();
-
-            bool generate = true;//false;
-            bool loadFromFile = false;//true;//true;
+            bool generate = false;
+            bool loadFromFile = true;
             bool saveToFile = false;//true;
             //NavMeshBuilder.OPTION_PARALLEL_THREADS = 1;
             //NavMeshBuilder.OPTION_REMOVE_SMALL_GRAPHS = false;
@@ -500,6 +521,16 @@ namespace monono2.AionMonoLib
 
             m_tempCompiledNavMeshSet = compiledMeshSet;
 
+            TIMER = DateTime.Now;
+            var floorLineVertices = RenderFloorLines(compiledMesh, Vector3.Zero, 0);
+            Debug.WriteLine("MESH ASSEMBLY TIME: " + (DateTime.Now - TIMER));
+
+            return floorLineVertices;
+        }
+
+        private List<VertexPositionColor> RenderFloorLines(CompiledNavMesh compiledMesh, Vector3 clipCenter, int clipSpan)
+        {
+            var floorLineVertices = new List<VertexPositionColor>();
             // DEBUG MARKERS
 
             //    floorLineVertices.Add(new VertexPositionColor(new Vector3(126, 65, 144.3f + 3), Color.Lime));
@@ -553,11 +584,33 @@ namespace monono2.AionMonoLib
             //=============================================
 
 
+            int clipX1 = 0;
+            int clipY1 = 0;
+            int clipX2 = compiledMesh.BlockWidth;
+            int clipY2 = compiledMesh.BlockHeight;
 
-            TIMER = DateTime.Now;
-            for (int bY = 0; bY < compiledMesh.BlockHeight; bY++)
+            if (clipSpan != 0)
             {
-                for (int bX = 0; bX < compiledMesh.BlockWidth; bX++)
+                var node = compiledMesh.FindFloorUnderPoint(clipCenter.X, clipCenter.Y, clipCenter.Z, 50);
+                if (node.blockIndex != 0 || node.directionFlags != 0)
+                {
+                    var pt = compiledMesh.BlockXYFromIndex(node.blockIndex);
+                    clipX1 = Math.Max(0, pt.X - clipSpan);
+                    clipY1 = Math.Max(0, pt.Y - clipSpan);
+                    clipX2 = Math.Min(clipX2, pt.X + clipSpan);
+                    clipY2 = Math.Min(clipY2, pt.Y + clipSpan);
+                }
+            }
+
+            //var pt1 = compiledMesh.WorldFromBlockIndex(2206555, 115);
+            //var pt2 = compiledMesh.WorldFromBlockIndex(2208535, 115);
+            //var DBGdir = compiledMesh.getDirectionToNeighborByIndex(2206555, 2208535);
+            //Util.DrawBoundingBox(BoundingBox.CreateFromPoints(new[] { new Vector3(pt1.X - 0.1f, pt1.Y - 0.1f, 115), new Vector3(pt1.X + 0.1f, pt1.Y + 0.1f, 122) }), floorLineVertices, Color.Lime);
+            //Util.DrawBoundingBox(BoundingBox.CreateFromPoints(new[] { new Vector3(pt2.X - 0.1f, pt2.Y - 0.1f, 115), new Vector3(pt2.X + 0.1f, pt2.Y + 0.1f, 122) }), floorLineVertices, Color.Red);
+
+            for (int bY = clipY1; bY < clipY2; bY++)
+            {
+                for (int bX = clipX1; bX < clipX2; bX++)
                 {
                     float x = compiledMesh.X1 + bX * compiledMesh.Step;
                     float y = compiledMesh.Y1 + bY * compiledMesh.Step;
@@ -596,7 +649,7 @@ namespace monono2.AionMonoLib
 
                             float halfstep = compiledMesh.Step;
                             float n;
-                            
+
                             n = compiledMesh.GetEdge(bX, bY, z, directionFlags, NavMeshUtil.DIRECTION_LEFT);
                             if (n >= 0)
                             {
@@ -648,7 +701,6 @@ namespace monono2.AionMonoLib
                         });
                 }
             }
-            Debug.WriteLine("MESH ASSEMBLY TIME: " + (DateTime.Now - TIMER));
             return floorLineVertices;
         }
     }

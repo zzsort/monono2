@@ -39,6 +39,9 @@ namespace monono2.AionMonoLib
         static KeyStateWatcher s_ksw6 = new KeyStateWatcher(Keys.D6);
         static KeyStateWatcher s_ksw7 = new KeyStateWatcher(Keys.D7);
 
+        static KeyStateWatcher s_kswt = new KeyStateWatcher(Keys.T);
+        static KeyStateWatcher s_kswy = new KeyStateWatcher(Keys.Y);
+        static KeyStateWatcher s_kswm = new KeyStateWatcher(Keys.M);
         private static bool s_wasPreviouslyActive;
         
         public static void HandleInput(AionLevelViewerImpl game, bool isActive, GameTime gameTime, Camera camera, ref Matrix view)
@@ -100,13 +103,18 @@ namespace monono2.AionMonoLib
                 camera.ApplyToView(ref view);
             }
 
-            if (kb.IsKeyDown(Keys.T))
+            // navmesh
+            if (s_kswt.IsDown(ref kb))
             {
                 game.SetAstarTargetPoint();
             }
-            if (kb.IsKeyDown(Keys.Y))
+            if (s_kswy.IsDown(ref kb))
             {
                 game.SetAstarStartPoint();
+            }
+            if (s_kswm.IsDown(ref kb))
+            {
+                game.DrawNavMeshUnderPosition();
             }
             
             // toggles
