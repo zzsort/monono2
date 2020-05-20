@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -227,18 +228,18 @@ namespace monono2.Common
         public static Vector3 ParseVector(string xyzStr)
         {
             var a = xyzStr.Split(new[] { ',' });
-            float x = float.Parse(a[0]);
-            float y = float.Parse(a[1]);
-            float z = float.Parse(a[2]);
+            float x = float.Parse(a[0], CultureInfo.InvariantCulture);
+            float y = float.Parse(a[1], CultureInfo.InvariantCulture);
+            float z = float.Parse(a[2], CultureInfo.InvariantCulture);
             return new Vector3(x, y, z);
         }
 
         public static void ParseVector(string xyzStr, out float x, out float y, out float z)
         {
             var a = xyzStr.Split(new[] { ',' });
-            x = float.Parse(a[0]);
-            y = float.Parse(a[1]);
-            z = float.Parse(a[2]);
+            x = float.Parse(a[0], CultureInfo.InvariantCulture);
+            y = float.Parse(a[1], CultureInfo.InvariantCulture);
+            z = float.Parse(a[2], CultureInfo.InvariantCulture);
         }
     }
     

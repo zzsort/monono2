@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
@@ -45,7 +46,7 @@ namespace monono2.Common
 
         private void LoadWaterLevel(XDocument xdoc)
         {
-            WaterLevel = float.Parse(xdoc.Root.Element("LevelInfo").Attribute("WaterLevel").Value);
+            WaterLevel = float.Parse(xdoc.Root.Element("LevelInfo").Attribute("WaterLevel").Value, CultureInfo.InvariantCulture);
         }
         
         private void LoadMapWidthAndHeight(XDocument xdoc)
