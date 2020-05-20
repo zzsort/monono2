@@ -53,7 +53,7 @@ namespace monono2.Common
             
             int meshDataBlockSz = meshInputStream.ReadInt32();
 
-            if (meshDataBlockSz < 17 || meshDataBlockSz > 19)
+            if (meshDataBlockSz < 16 || meshDataBlockSz > 19)
             {
                 throw new InvalidOperationException("unexpected block size");
             }
@@ -176,10 +176,7 @@ namespace monono2.Common
 
                 meshInputStream.ReadInt32(); // always 3?
 
-
-                meshInputStream.ReadInt32(); // 0 - unknown
-
-                meshInputStream.ReadBytes(4 * (meshDataBlockSz - 17));
+                meshInputStream.ReadBytes(4 * (meshDataBlockSz - 16));
 
                 //if (b != 0)
                 //  Debug.WriteLine($"meshIdx:{meshData.meshIdx}  value:{b}  {brushInfoList[meshData.meshIdx].filename}");
