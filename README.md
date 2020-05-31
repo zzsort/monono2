@@ -20,6 +20,9 @@ Shift - speed up.<br>
 ## ALGeoBuilder
 Geodata is generated in a format similar to the typical format used by Aion Lightning servers
 but should be expected to require code modification to use.
+
+Basic usage to generate .geo files: `algeobuilder.exe -geo -o c:\output c:\aionclient`
+
 - Loads terrain, brushes and vegetation.
 - Generates a custom door format.
 - Generates a custom navmesh format.
