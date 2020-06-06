@@ -43,6 +43,7 @@ namespace monono2.AionClientViewer
             }
             catch (InvalidOperationException e)
             {
+                Log.WriteLine("TryLoadFromKnownMonoImageFormats : " + e.Message);
                 result = null;
             }
             return (result != null);
@@ -88,6 +89,8 @@ namespace monono2.AionClientViewer
                 result = tex;
             }
             catch (Exception e) {
+
+                Log.WriteLine("TryLoadDds : " + e.Message);
                 result = null;
             }
             return (result != null);
