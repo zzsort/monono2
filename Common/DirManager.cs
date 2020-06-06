@@ -28,7 +28,7 @@ namespace monono2.Common
 
         private void SetRootPath(string rootPath)
         {
-            m_rootPath = rootPath.ToLower(new CultureInfo("en_US", false));
+            m_rootPath = rootPath.ToLower(new CultureInfo("en-US", false));
             if (!Directory.Exists(m_rootPath))
                 throw new DirectoryNotFoundException();
         }
@@ -141,7 +141,7 @@ namespace monono2.Common
 
         private string NormalizePath(string path)
         {
-            return path.ToLower(new CultureInfo("en_US", false)).Replace('/', '\\');
+            return path.ToLower(new CultureInfo("en-US", false)).Replace('/', '\\');
         }
 
         private string GetRelativePath(string path)

@@ -81,7 +81,7 @@ namespace monono2.Common
                 //			int dw1 = meshInputStream.readInt();
 
                 meshInputStream.Read(fileNameBytes, 0, 128);
-                info.filename = Encoding.UTF8.GetString(fileNameBytes).Trim().Trim('\0').ToLower(new CultureInfo("en_US", false)).Replace('\\', '/');
+                info.filename = Encoding.UTF8.GetString(fileNameBytes).Trim().Trim('\0').ToLower(new CultureInfo("en-US", false)).Replace('\\', '/');
 
                 meshInputStream.ReadInt32(); // skip - usually 1, sometimes 3
                     

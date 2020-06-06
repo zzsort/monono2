@@ -11,7 +11,7 @@ namespace monono2.Common.FileFormats.Pak
     {
         public static string NormalizeFilename(string originalFilename)
         {
-            return originalFilename.ToLower(new CultureInfo("en_US", false)).Replace('\\', '/');
+            return originalFilename.ToLower(new CultureInfo("en-US", false)).Replace('\\', '/');
         }
 
         public static string ReadFilename(BinaryReader br, int length)
